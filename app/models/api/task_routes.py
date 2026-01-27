@@ -1,10 +1,18 @@
 from fastapi import APIRouter, Depends
-from app.models.schemas import TaskCreate
-from app.models.services.task_service import add_task
-from app.auth.api_key_auth import verify_api_key
+from pydantic import BaseModel
+from app.core.security import get_current_user
+from app.services.task_service import create_task, list_tasks
 
 router = APIRouter()
 
+class TaskReq(BaseModel):
+    title: str
+    priority: str = "normal"
+
 @router.post("/")
-def create_task(payload: TaskCreate, auth=Depends(verify_api_key)):
-    return add_task(payload.title)
+def add_task(data: TaskReq, user=Depends(get_current_user)):
+    return create_task(data.title, data.priority, user)
+
+@router.get("/")
+def get_tasks(user=Depends(get_current_user)):
+    return list_tasks(user)
