@@ -1,1 +1,1 @@
-# app package initializer
+# models package
