@@ -11,4 +11,6 @@ app.include_router(
 
 @app.get("/")
 def root():
-    return {"status": "Velvoro Daily OS running"}
+    return {
+        "status": "Velvoro Daily OS running"
+    }
