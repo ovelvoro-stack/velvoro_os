@@ -1,6 +1,6 @@
-import os
+from pathlib import Path
 
-APP_NAME = "Velvoro Daily OS"
-ENV = os.getenv("ENV", "development")
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
 
-DATABASE_PATH = os.getenv("DATABASE_PATH", "velvoro.db")
+DATA_DIR.mkdir(exist_ok=True)
