@@ -1,10 +1,18 @@
 from fastapi import APIRouter, Depends
-from app.models.schemas import FollowupCreate
-from app.models.services.followup_service import add_followup
-from app.auth.api_key_auth import verify_api_key
+from pydantic import BaseModel
+from app.core.security import get_current_user
+from app.services.followup_service import create_followup, list_followups
 
 router = APIRouter()
 
+class FollowReq(BaseModel):
+    note: str
+    due_date: str
+
 @router.post("/")
-def create_followup(payload: FollowupCreate, auth=Depends(verify_api_key)):
-    return add_followup(payload.note, payload.due_date)
+def add_followup(data: FollowReq, user=Depends(get_current_user)):
+    return create_followup(data.note, data.due_date, user)
+
+@router.get("/")
+def get_followups(user=Depends(get_current_user)):
+    return list_followups(user)
