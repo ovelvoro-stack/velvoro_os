@@ -1,8 +1,11 @@
 from pydantic import BaseModel
 
-class TaskCreate(BaseModel):
+class Task(BaseModel):
+    id: str
     title: str
+    status: str
 
-class FollowupCreate(BaseModel):
+class FollowUp(BaseModel):
+    id: str
     note: str
     due_date: str
