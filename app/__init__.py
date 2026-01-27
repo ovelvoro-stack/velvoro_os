@@ -1,1 +1,1 @@
-# models package
+# Makes app a package
