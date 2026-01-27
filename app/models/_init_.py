@@ -1,1 +1,1 @@
-# models package initializer
+# Makes app.models.api a proper Python package
