@@ -1,12 +1,18 @@
 import uuid
-from app.database import read_sheet, write_sheet
+from datetime import date
+from app.db.repository import add_record, list_records
 
-def add_task(title: str):
-    df = read_sheet("tasks")
-    df.loc[len(df)] = {
+def create_task(title, priority, user):
+    record = {
         "id": str(uuid.uuid4()),
         "title": title,
-        "status": "pending"
+        "status": "pending",
+        "priority": priority,
+        "created_date": date.today(),
+        "user": user
     }
-    write_sheet("tasks", df)
-    return {"status": "task added"}
+    add_record("tasks", record)
+    return record
+
+def list_tasks(user):
+    return [t for t in list_records("tasks") if t["user"] == user]
