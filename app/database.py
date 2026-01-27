@@ -1,27 +1,15 @@
-import os
 import pandas as pd
+from app.config import DATA_DIR
 
-DATA_DIR = "data"
-FILE_PATH = os.path.join(DATA_DIR, "daily_data.xlsx")
+def _file_path(name: str):
+    return DATA_DIR / f"{name}.csv"
 
-def init_excel():
-    if not os.path.exists(DATA_DIR):
-        os.makedirs(DATA_DIR)
+def read_sheet(name: str) -> pd.DataFrame:
+    path = _file_path(name)
+    if not path.exists():
+        return pd.DataFrame()
+    return pd.read_csv(path)
 
-    if not os.path.exists(FILE_PATH):
-        with pd.ExcelWriter(FILE_PATH, engine="openpyxl") as writer:
-            pd.DataFrame(columns=["id", "title", "status"]).to_excel(
-                writer, sheet_name="tasks", index=False
-            )
-            pd.DataFrame(columns=["id", "note", "due_date"]).to_excel(
-                writer, sheet_name="followups", index=False
-            )
-
-def read_sheet(sheet_name):
-    init_excel()
-    return pd.read_excel(FILE_PATH, sheet_name=sheet_name)
-
-def write_sheet(sheet_name, df):
-    init_excel()
-    with pd.ExcelWriter(FILE_PATH, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
-        df.to_excel(writer, sheet_name=sheet_name, index=False)
+def write_sheet(name: str, df: pd.DataFrame):
+    path = _file_path(name)
+    df.to_csv(path, index=False)
