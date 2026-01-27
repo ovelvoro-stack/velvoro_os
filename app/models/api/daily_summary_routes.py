@@ -1,46 +1,23 @@
 from fastapi import APIRouter
-from datetime import date
-from typing import List, Dict, Any
-
-router = APIRouter(
-    prefix="/daily-summary",
-    tags=["Daily Summary"]
+from app.services.daily_summary_service import (
+    get_daily_summary,
+    add_task,
+    add_followup
 )
+from app.models.schemas import TaskCreate, FollowupCreate
 
+router = APIRouter()
 
-@router.get("/", response_model=Dict[str, Any])
-def get_daily_summary():
-    """
-    Daily Summary Engine
-    - Tasks
-    - Pending follow-ups
-    - AI suggestion (stub)
-    """
+@router.get("/")
+def daily_summary():
+    return get_daily_summary()
 
-    summary_data = {
-        "date": str(date.today()),
-        "tasks": [
-            {
-                "id": 1,
-                "title": "Review pending tasks",
-                "status": "pending",
-                "priority": "high"
-            },
-            {
-                "id": 2,
-                "title": "Send follow-up emails",
-                "status": "completed",
-                "priority": "medium"
-            }
-        ],
-        "pending_followups": [
-            {
-                "id": 101,
-                "note": "Call client regarding proposal",
-                "due_time": "16:00"
-            }
-        ],
-        "ai_suggestion": "Focus on completing one high-impact task before noon."
-    }
+@router.post("/task")
+def create_task(payload: TaskCreate):
+    add_task(payload.title)
+    return {"message": "Task added"}
 
-    return summary_data
+@router.post("/followup")
+def create_followup(payload: FollowupCreate):
+    add_followup(payload.note, payload.due_date)
+    return {"message": "Follow-up added"}
