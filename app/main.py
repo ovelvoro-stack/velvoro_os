@@ -1,14 +1,10 @@
 from fastapi import FastAPI
-from app.api.daily_summary_routes import router as daily_summary_router
+from app.api.daily_summary_routes import router
 
-app = FastAPI(
-    title="Velvoro Daily OS",
-    version="1.0.0"
-)
+app = FastAPI(title="Velvoro Daily OS")
+
+app.include_router(router, prefix="/daily-summary")
 
 @app.get("/")
-def root():
-    return {"status": "Velvoro Daily OS backend running"}
-
-# 🔥 VERY IMPORTANT
-app.include_router(daily_summary_router)
+def health():
+    return {"status": "Velvoro Daily OS running"}
