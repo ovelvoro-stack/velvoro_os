@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Velvoro Daily OS</title>
+</head>
+<body>
+  <h2>Daily Summary</h2>
+  <button onclick="load()">Load</button>
+  <pre id="out"></pre>
+
+<script>
+async function load(){
+  const res = await fetch("https://YOUR_RENDER_URL/daily-summary/");
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+</script>
+</body>
+</html>
