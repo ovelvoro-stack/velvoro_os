@@ -5,5 +5,5 @@ def get_daily_summary():
         "date": str(date.today()),
         "tasks": [],
         "followups": [],
-        "ai_suggestion": "Focus on one high-impact task today"
+        "ai_suggestion": "Focus on completing one high-impact task today."
     }
