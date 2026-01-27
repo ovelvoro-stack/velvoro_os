@@ -1,12 +1,15 @@
 import uuid
-from app.database import read_sheet, write_sheet
+from app.db.repository import add_record, list_records
 
-def add_followup(note: str, due_date: str):
-    df = read_sheet("followups")
-    df.loc[len(df)] = {
+def create_followup(note, due_date, user):
+    record = {
         "id": str(uuid.uuid4()),
         "note": note,
-        "due_date": due_date
+        "due_date": due_date,
+        "user": user
     }
-    write_sheet("followups", df)
-    return {"status": "followup added"}
+    add_record("followups", record)
+    return record
+
+def list_followups(user):
+    return [f for f in list_records("followups") if f["user"] == user]
