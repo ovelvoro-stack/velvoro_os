@@ -1,1 +1,1 @@
-# auth package initializer
+# Auth package (JWT + roles)
