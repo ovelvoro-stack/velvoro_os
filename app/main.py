@@ -1,9 +1,13 @@
 from fastapi import FastAPI
-from app.api.daily_summary_routes import router as daily_summary_router
+from app.models.api.daily_summary_routes import router as daily_summary_router
 
 app = FastAPI(title="Velvoro Daily OS")
 
-app.include_router(daily_summary_router, prefix="/daily")
+app.include_router(
+    daily_summary_router,
+    prefix="/daily-summary",
+    tags=["Daily Summary"]
+)
 
 @app.get("/")
 def root():
