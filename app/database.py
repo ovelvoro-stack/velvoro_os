@@ -1,7 +1,27 @@
-import sqlite3
-from app.config import DATABASE_PATH
+import os
+import pandas as pd
 
-def get_connection():
-    conn = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
-    conn.row_factory = sqlite3.Row
-    return conn
+DATA_DIR = "data"
+FILE_PATH = os.path.join(DATA_DIR, "daily_data.xlsx")
+
+def init_excel():
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
+
+    if not os.path.exists(FILE_PATH):
+        with pd.ExcelWriter(FILE_PATH, engine="openpyxl") as writer:
+            pd.DataFrame(columns=["id", "title", "status"]).to_excel(
+                writer, sheet_name="tasks", index=False
+            )
+            pd.DataFrame(columns=["id", "note", "due_date"]).to_excel(
+                writer, sheet_name="followups", index=False
+            )
+
+def read_sheet(sheet_name):
+    init_excel()
+    return pd.read_excel(FILE_PATH, sheet_name=sheet_name)
+
+def write_sheet(sheet_name, df):
+    init_excel()
+    with pd.ExcelWriter(FILE_PATH, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
+        df.to_excel(writer, sheet_name=sheet_name, index=False)
