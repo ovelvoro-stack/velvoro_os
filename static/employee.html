@@ -2,29 +2,29 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Daily Task</title>
+<title>Login</title>
 <style>
 body{font-family:Arial;padding:20px}
 input,button{width:100%;padding:12px;margin-top:10px}
 </style>
 </head>
 <body>
-<h3>Today's Work</h3>
+<h3>Login</h3>
 <input id="company" placeholder="Company ID">
-<input id="employee" placeholder="Your Name">
-<input id="task" placeholder="Task">
-<button onclick="submitTask()">Submit</button>
+<input id="user" placeholder="Username">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
 <script>
-function submitTask(){
-fetch("/api/employee/task",{
+function login(){
+fetch("/auth/login",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
-company_id:document.getElementById("company").value,
-employee:document.getElementById("employee").value,
-task:document.getElementById("task").value
+company_id:company.value,
+username:user.value,
+password:pass.value
 })
-}).then(()=>alert("Saved"));
+}).then(r=>r.json()).then(d=>alert(JSON.stringify(d)));
 }
 </script>
 </body>
