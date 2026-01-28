@@ -1,21 +1,20 @@
-from fastapi import Request, HTTPException
-import pandas as pd
+from fastapi import Request
+from starlette.middleware.base import BaseHTTPMiddleware
+from app.core.jwt_utils import verify_token
 
-USERS = "data/users.xlsx"
+PUBLIC_PATHS = ["/login"]
 
-async def require_role(request: Request, roles: list):
-    headers = request.headers
-    company_id = headers.get("x-company-id")
-    username = headers.get("x-username")
+class AuthMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path in PUBLIC_PATHS:
+            return await call_next(request)
 
-    if not company_id or not username:
-        raise HTTPException(status_code=401, detail="Auth headers missing")
+        token = request.cookies.get("access_token")
+        payload = verify_token(token) if token else None
 
-    df = pd.read_excel(USERS)
-    user = df[
-        (df["company_id"] == company_id) &
-        (df["username"] == username)
-    ]
+        if not payload:
+            from fastapi.responses import RedirectResponse
+            return RedirectResponse("/login")
 
-    if user.empty or user.iloc[0]["role"] not in roles:
-        raise HTTPException(status_code=403, detail="Access denied")
+        request.state.user = payload
+        return await call_next(request)
