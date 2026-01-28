@@ -1,12 +1,14 @@
 from fastapi import FastAPI
-from app.auth.routes import router as auth_router
-from app.frontend.routes import router as ui_router
-from app.billing.routes import router as billing_router
-from app.core.auth_middleware import AuthMiddleware
+from fastapi.responses import RedirectResponse
+from app.auth.routes import auth_router
+from app.middleware.jwt_middleware import JWTMiddleware
 
 app = FastAPI()
 
-app.add_middleware(AuthMiddleware)
+app.add_middleware(JWTMiddleware)
+
+@app.get("/")
+def root():
+    return RedirectResponse(url="/login")
+
 app.include_router(auth_router)
-app.include_router(ui_router)
-app.include_router(billing_router)
