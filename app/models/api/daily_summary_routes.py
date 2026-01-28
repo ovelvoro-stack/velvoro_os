@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from app.models.services.daily_summary_service import get_daily_summary
+from app.models.services.task_service import list_tasks
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("/daily-summary/")
 def daily_summary():
-    return get_daily_summary()
+    return list_tasks()
