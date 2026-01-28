@@ -1,7 +1,8 @@
 fastapi
 uvicorn
+python-multipart
+jinja2
 pandas
 openpyxl
-python-multipart
-itsdangerous
+python-dotenv
 passlib[bcrypt]
