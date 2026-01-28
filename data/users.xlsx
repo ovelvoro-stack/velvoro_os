@@ -1,0 +1,3 @@
+company_id | username | password | role
+velvoro    | admin    | admin123 | manager
+velvoro    | emp1     | emp123   | employee
