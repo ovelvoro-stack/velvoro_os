@@ -1,28 +1,34 @@
-from fastapi import APIRouter, Request, Form
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi import APIRouter, HTTPException
+from app.db.excel_db import load_excel
+from app.core.security import verify_password
 
-auth_router = APIRouter()
-
-USERS = {
-    "employee1": {"password": "1234", "role": "employee"},
-    "manager1": {"password": "admin", "role": "manager"}
-}
-
-@auth_router.get("/login", response_class=HTMLResponse)
-def login_page():
-    with open("templates/login.html") as f:
-        return f.read()
+auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 @auth_router.post("/login")
-def login(request: Request, username: str = Form(...), password: str = Form(...)):
-    user = USERS.get(username)
-    if not user or user["password"] != password:
-        return HTMLResponse("<h3>Invalid credentials</h3>", status_code=401)
+def login(company_name: str, username: str, password: str):
+    users = load_excel("users.xlsx")
 
-    request.session["user"] = {"username": username, "role": user["role"]}
-    return RedirectResponse(f"/{user['role']}", status_code=302)
+    user = users[
+        (users.company_name == company_name) &
+        (users.username == username)
+    ]
 
-@auth_router.get("/logout")
-def logout(request: Request):
-    request.session.clear()
-    return RedirectResponse("/login")
+    if user.empty:
+        raise HTTPException(401, "Invalid credentials")
+
+    row = user.iloc[0]
+
+    if row.active_status != "active":
+        raise HTTPException(403, "User disabled")
+
+    if row.plan_status != "active":
+        raise HTTPException(402, "Company plan expired")
+
+    if not verify_password(password, row.password):
+        raise HTTPException(401, "Invalid credentials")
+
+    return {
+        "company": company_name,
+        "username": username,
+        "role": row.role
+    }
