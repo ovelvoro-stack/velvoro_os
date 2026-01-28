@@ -1,6 +1,3 @@
-File name: task_routes.py
-File path: app/models/api/task_routes.py
-Full code:
 from fastapi import APIRouter
 from app.models.services.task_service import create_task, list_tasks
 
