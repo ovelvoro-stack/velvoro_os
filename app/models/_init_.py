@@ -1,1 +1,1 @@
-# Package initializer for app.models
+# makes app.models a valid python package
