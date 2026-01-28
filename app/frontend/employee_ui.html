@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<header>ఉద్యోగి</header>
+<div class="container">
+  <input id="task" placeholder="ఈరోజు పని">
+  <button onclick="save()">సేవ్</button>
+</div>
+
+<script>
+function save() {
+  fetch("/employee/task", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      user: "employee1",
+      task: document.getElementById("task").value
+    })
+  });
+}
+</script>
+</body>
+</html>
