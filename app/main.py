@@ -1,6 +1,3 @@
-File name: main.py
-File path: app/main.py
-Full code:
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
