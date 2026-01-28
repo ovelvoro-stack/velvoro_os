@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Velvoro Login</title>
+</head>
+<body>
+  <h2>లాగిన్</h2>
+
+  <input id="username" placeholder="యూజర్ పేరు"><br><br>
+  <input id="password" type="password" placeholder="పాస్‌వర్డ్"><br><br>
+
+  <button onclick="login()">లాగిన్</button>
+
+  <pre id="out"></pre>
+
+  <script>
+    function login() {
+      fetch("/auth/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value
+        })
+      })
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById("out").innerText = JSON.stringify(d, null, 2);
+      });
+    }
+  </script>
+</body>
+</html>
