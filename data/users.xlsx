@@ -1,3 +1,5 @@
-company_id | username | password | role
-velvoro    | admin    | admin123 | manager
-velvoro    | emp1     | emp123   | employee
+company_name
+username
+password (HASHED)
+role
+plan_status
