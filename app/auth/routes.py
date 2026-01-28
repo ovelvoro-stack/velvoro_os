@@ -1,55 +1,31 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from app.core.security import (
-    verify_password,
-    create_access_token,
-    create_refresh_token,
-    decode_token,
-)
-from app.db.users import get_user_by_credentials
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 
-auth_router = APIRouter(prefix="/auth")
+from app.core.security import verify_password, create_access_token
+from app.db.excel_db import get_user_by_credentials
 
-
-class LoginRequest(BaseModel):
-    company_name: str
-    username: str
-    password: str
+auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @auth_router.post("/login")
-def login(data: LoginRequest):
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user = get_user_by_credentials(
-        data.company_name, data.username
+        username=form_data.username,
+        password=form_data.password,
     )
 
-    if not user or not verify_password(data.password, user["password"]):
+    if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    payload = {
-        "company": user["company_name"],
-        "username": user["username"],
-        "role": user["role"],
-    }
+    access_token = create_access_token(
+        data={
+            "username": user["username"],
+            "role": user["role"],
+            "company_name": user["company_name"],
+        }
+    )
 
     return {
-        "access_token": create_access_token(payload),
-        "refresh_token": create_refresh_token(payload),
-    }
-
-
-@auth_router.post("/refresh")
-def refresh_token(token: str):
-    payload = decode_token(token)
-    if payload.get("type") != "refresh":
-        raise HTTPException(status_code=401, detail="Invalid refresh token")
-
-    new_payload = {
-        "company": payload["company"],
-        "username": payload["username"],
-        "role": payload["role"],
-    }
-
-    return {
-        "access_token": create_access_token(new_payload)
+        "access_token": access_token,
+        "token_type": "bearer",
     }
