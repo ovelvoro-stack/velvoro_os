@@ -1,36 +1,21 @@
-from fastapi import FastAPI, Request, Depends, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 
-from app.auth.auth import get_current_user
-from app.auth.routes import auth_router
+from app.models.api.login_routes import router as login_router
+from app.models.api.protected_routes import router as protected_router
+from app.models.api.daily_summary_routes import router as daily_summary_router
 
 app = FastAPI()
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key="VELVORO_SUPER_SECRET_KEY"
+    secret_key="VELVORO_SECRET_KEY"
 )
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-app.include_router(auth_router)
-
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
 def root():
-    return RedirectResponse("/login")
+    return {"status": "Velvoro Daily OS Running"}
 
-@app.get("/employee", response_class=HTMLResponse)
-def employee_dashboard(user=Depends(get_current_user)):
-    if user["role"] != "employee":
-        raise HTTPException(status_code=403)
-    with open("templates/employee.html") as f:
-        return f.read()
-
-@app.get("/manager", response_class=HTMLResponse)
-def manager_dashboard(user=Depends(get_current_user)):
-    if user["role"] != "manager":
-        raise HTTPException(status_code=403)
-    with open("templates/manager.html") as f:
-        return f.read()
+app.include_router(login_router)
+app.include_router(protected_router)
+app.include_router(daily_summary_router)
