@@ -1,33 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Velvoro Login</title>
+    <meta charset="UTF-8">
+    <title>Velvoro OS – Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            width: 320px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1e40af;
+        }
+        .result {
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-  <h2>లాగిన్</h2>
 
-  <input id="username" placeholder="యూజర్ పేరు"><br><br>
-  <input id="password" type="password" placeholder="పాస్‌వర్డ్"><br><br>
+<div class="login-box">
+    <h2>Velvoro Login</h2>
 
-  <button onclick="login()">లాగిన్</button>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+    </form>
 
-  <pre id="out"></pre>
+    <div class="result" id="result"></div>
+</div>
 
-  <script>
-    function login() {
-      fetch("/auth/login", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          username: document.getElementById("username").value,
-          password: document.getElementById("password").value
-        })
-      })
-      .then(r => r.json())
-      .then(d => {
-        document.getElementById("out").innerText = JSON.stringify(d, null, 2);
-      });
-    }
-  </script>
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("https://velvoro-os.onrender.com/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        });
+
+        const resultBox = document.getElementById("result");
+
+        if (response.ok) {
+            const data = await response.json();
+            resultBox.style.color = "green";
+            resultBox.innerText = "Login Successful ✅";
+        } else {
+            const error = await response.text();
+            resultBox.style.color = "red";
+            resultBox.innerText = "Login Failed ❌";
+        }
+    });
+</script>
+
 </body>
 </html>
