@@ -1,34 +1,22 @@
-from fastapi import APIRouter, HTTPException
-from app.db.excel_db import load_excel
-from app.core.security import verify_password
+from fastapi import APIRouter, Form
+from fastapi.responses import RedirectResponse
+from app.core.jwt_utils import create_access_token
+import csv
 
-auth_router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter()
 
-@auth_router.post("/login")
-def login(company_name: str, username: str, password: str):
-    users = load_excel("users.xlsx")
-
-    user = users[
-        (users.company_name == company_name) &
-        (users.username == username)
-    ]
-
-    if user.empty:
-        raise HTTPException(401, "Invalid credentials")
-
-    row = user.iloc[0]
-
-    if row.active_status != "active":
-        raise HTTPException(403, "User disabled")
-
-    if row.plan_status != "active":
-        raise HTTPException(402, "Company plan expired")
-
-    if not verify_password(password, row.password):
-        raise HTTPException(401, "Invalid credentials")
-
-    return {
-        "company": company_name,
-        "username": username,
-        "role": row.role
-    }
+@router.post("/login")
+def login(company: str = Form(...), username: str = Form(...), password: str = Form(...)):
+    with open("data/users.csv") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row["company_name"] == company and row["username"] == username and row["password"] == password:
+                token = create_access_token({
+                    "company": company,
+                    "username": username,
+                    "role": row["role"]
+                })
+                response = RedirectResponse("/employee/dashboard", status_code=302)
+                response.set_cookie("access_token", token, httponly=True)
+                return response
+    return RedirectResponse("/login?error=1", status_code=302)
