@@ -6,20 +6,21 @@ from app.auth.routes import auth_router
 
 app = FastAPI()
 
-# Templates setup
+# ✅ FIX: correct templates directory (NOT app/templates)
 templates = Jinja2Templates(directory="templates")
 
-# Root → /login
+
 @app.get("/")
 def root():
     return RedirectResponse(url="/login")
 
-# Existing login redirect (DO NOT TOUCH)
+
 @app.get("/login")
 def login_redirect():
     return RedirectResponse(url="/auth/login")
 
-# ✅ TEST LOGIN PAGE (PARALLEL, SAFE)
+
+# ✅ PARALLEL SAFE TEST PAGE
 @app.get("/login-test", response_class=HTMLResponse)
 def login_test(request: Request):
     return templates.TemplateResponse(
@@ -27,5 +28,6 @@ def login_test(request: Request):
         {"request": request}
     )
 
-# Auth routes
+
+# existing auth routes
 app.include_router(auth_router)
