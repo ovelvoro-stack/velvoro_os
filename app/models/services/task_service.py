@@ -1,18 +1,7 @@
-import uuid
-from datetime import date
-from app.db.repository import add_record, list_records
+from app.db.excel_db import add_task, get_tasks
 
-def create_task(title, priority, user):
-    record = {
-        "id": str(uuid.uuid4()),
-        "title": title,
-        "status": "pending",
-        "priority": priority,
-        "created_date": date.today(),
-        "user": user
-    }
-    add_record("tasks", record)
-    return record
+def create_task(user, task):
+    add_task(user, task)
 
-def list_tasks(user):
-    return [t for t in list_records("tasks") if t["user"] == user]
+def list_tasks():
+    return get_tasks()
