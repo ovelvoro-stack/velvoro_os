@@ -1,1 +1,1 @@
-| id | company_name | username | task | status |
+id,company_name,username,task,status
