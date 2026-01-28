@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from app.services.task_service import list_tasks
+from app.models.services.task_service import list_tasks
 
 router = APIRouter()
 
 @router.get("/api/manager/tasks")
-def get_tasks():
+def manager_tasks():
     return list_tasks()
