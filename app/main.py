@@ -20,7 +20,7 @@ def login_redirect():
     return RedirectResponse(url="/auth/login")
 
 
-# ✅ TEST LOGIN PAGE (NEW – PARALLEL, SAFE)
+# ✅ TEST LOGIN PAGE (PARALLEL, SAFE)
 @app.get("/login-test", response_class=HTMLResponse)
 def login_test(request: Request):
     return templates.TemplateResponse(
@@ -29,23 +29,5 @@ def login_test(request: Request):
     )
 
 
-# Existing auth routes (UNCHANGED)
-app.include_router(auth_router)from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
-
-from app.auth.routes import auth_router
-
-app = FastAPI()
-
-
-@app.get("/")
-def root():
-    return RedirectResponse(url="/login")
-
-
-@app.get("/login")
-def login_redirect():
-    return RedirectResponse(url="/auth/login")
-
-
+# ✅ Existing auth routes (DO NOT REMOVE)
 app.include_router(auth_router)
