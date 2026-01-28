@@ -1,18 +1,21 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from app.services.auth_service import authenticate_user
 
-router = APIRouter()
-
-class LoginRequest(BaseModel):
-    username: str
-    password: str
+router = APIRouter(prefix="/auth")
 
 @router.post("/login")
-def login(data: LoginRequest):
-    if data.username == "admin" and data.password == "admin":
-        return {
-            "status": "success",
-            "user": "admin",
-            "role": "admin"
-        }
-    raise HTTPException(status_code=401, detail="Invalid credentials")
+def login(data: dict):
+    user = authenticate_user(
+        username=data.get("username"),
+        password=data.get("password")
+    )
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    return {
+        "status": "success",
+        "user_id": user["user_id"],
+        "name": user["name"],
+        "role": user["role"]
+    }
