@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h3>మెనేజర్ వీక్షణ</h3>
+<button onclick="load()">లోడ్</button>
+<pre id="out"></pre>
+
+<script>
+function load(){
+ fetch("/manager/tasks")
+ .then(r=>r.json())
+ .then(d=>out.innerText=JSON.stringify(d,null,2))
+}
+</script>
+</body>
+</html>
