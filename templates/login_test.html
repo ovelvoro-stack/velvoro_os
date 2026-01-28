@@ -1,25 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Velvoro OS Login Test</title>
-</head>
-<body>
+from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.templating import Jinja2Templates
 
-<h2>Velvoro Daily OS – Login Test Page</h2>
+from app.auth.routes import auth_router
 
-<form method="POST" action="https://velvoro-os.onrender.com/auth/login">
-    <label>Username</label><br>
-    <input type="text" name="username" required><br><br>
+app = FastAPI()
 
-    <label>Password</label><br>
-    <input type="password" name="password" required><br><br>
+# Templates setup
+templates = Jinja2Templates(directory="app/templates")
 
-    <button type="submit">Login</button>
-</form>
 
-<p>
-ఈ పేజీ browser నుంచి <b>POST /auth/login</b> ని test చేయడానికి మాత్రమే.
-</p>
+@app.get("/")
+def root():
+    return RedirectResponse(url="/login")
 
-</body>
-</html>
+
+@app.get("/login")
+def login_redirect():
+    return RedirectResponse(url="/auth/login")
+
+
+# ✅ TEST LOGIN PAGE (PARALLEL, SAFE)
+@app.get("/login-test", response_class=HTMLResponse)
+def login_test(request: Request):
+    return templates.TemplateResponse(
+        "login_test.html",
+        {"request": request}
+    )
+
+
+# ✅ Existing auth routes (DO NOT REMOVE)
+app.include_router(auth_router)
