@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Task</title>
+<style>
+body{font-family:Arial;padding:20px}
+input,button{width:100%;padding:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<h3>Today's Work</h3>
+<input id="company" placeholder="Company ID">
+<input id="employee" placeholder="Your Name">
+<input id="task" placeholder="Task">
+<button onclick="submitTask()">Submit</button>
+<script>
+function submitTask(){
+fetch("/api/employee/task",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+company_id:document.getElementById("company").value,
+employee:document.getElementById("employee").value,
+task:document.getElementById("task").value
+})
+}).then(()=>alert("Saved"));
+}
+</script>
+</body>
+</html>
