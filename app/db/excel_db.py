@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data")
+DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 USERS_FILE = os.path.join(DATA_DIR, "users.csv")
 
 
@@ -9,6 +9,12 @@ def _load_users_df():
     if not os.path.exists(USERS_FILE):
         return pd.DataFrame(columns=["username", "password", "role", "company"])
     return pd.read_csv(USERS_FILE)
+
+
+def _save_users_df(df: pd.DataFrame):
+    os.makedirs(DATA_DIR, exist_ok=True)
+    # 🔴 FIX: Use CSV writer only (NO ExcelWriter / openpyxl)
+    df.to_csv(USERS_FILE, index=False)
 
 
 def get_user(username: str):
@@ -19,12 +25,17 @@ def get_user(username: str):
     return user.iloc[0].to_dict()
 
 
-# 🔴 REQUIRED ALIAS — DO NOT REMOVE
-# This fixes ImportError in app/auth/routes.py
 def get_user_by_credentials(username: str, password: str):
-    user = get_user(username)
-    if not user:
+    df = _load_users_df()
+    user = df[(df["username"] == username) & (df["password"] == password)]
+    if user.empty:
         return None
-    if str(user.get("password")) != str(password):
-        return None
-    return user
+    return user.iloc[0].to_dict()
+
+
+def create_or_update_user(user_data: dict):
+    df = _load_users_df()
+    df = df[df["username"] != user_data["username"]]
+    df = pd.concat([df, pd.DataFrame([user_data])], ignore_index=True)
+    _save_users_df(df)
+    return True
