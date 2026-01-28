@@ -1,46 +1,40 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-
-from app.models.auth.jwt_utils import create_access_token
+from fastapi import APIRouter, Request, Form
+from fastapi.responses import RedirectResponse, HTMLResponse
+from starlette.middleware.sessions import SessionMiddleware
+from app.models.services.auth_service import authenticate_user
 
 router = APIRouter()
 
-# EXISTING SIMPLE LOGIN → now JWT-enabled (still backward compatible)
-class LoginRequest(BaseModel):
-    username: str
-    password: str
-
+@router.get("/login", response_class=HTMLResponse)
+def login_page():
+    return """
+    <html>
+    <body>
+        <h2>Velvoro Daily OS Login</h2>
+        <form method="post">
+            Company: <input name="company"><br><br>
+            Username: <input name="username"><br><br>
+            Password: <input type="password" name="password"><br><br>
+            <button type="submit">Login</button>
+        </form>
+    </body>
+    </html>
+    """
 
 @router.post("/login")
-def login(data: LoginRequest):
-    if data.username == "admin" and data.password == "admin":
-        token = create_access_token(
-            {
-                "sub": data.username,
-                "role": "admin",
-            }
-        )
-        return {
-            "status": "success",
-            "user": "admin",
-            "role": "admin",
-            "access_token": token,
-            "token_type": "bearer",
-        }
+def login(request: Request,
+          company: str = Form(...),
+          username: str = Form(...),
+          password: str = Form(...)):
 
-    if data.username == "user" and data.password == "user":
-        token = create_access_token(
-            {
-                "sub": data.username,
-                "role": "user",
-            }
-        )
-        return {
-            "status": "success",
-            "user": "user",
-            "role": "user",
-            "access_token": token,
-            "token_type": "bearer",
-        }
+    user = authenticate_user(company, username, password)
 
-    raise HTTPException(status_code=401, detail="Invalid credentials")
+    if not user:
+        return HTMLResponse("Invalid credentials", status_code=401)
+
+    request.session["user"] = user
+
+    if user["role"] == "manager":
+        return RedirectResponse("/manager", status_code=302)
+
+    return RedirectResponse("/employee", status_code=302)
