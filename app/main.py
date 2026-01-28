@@ -1,12 +1,12 @@
 from fastapi import FastAPI
-from app.auth.routes import auth_router
-from app.manager.routes import manager_router
-from app.admin.routes import admin_router
-from app.employee.routes import employee_router
+from fastapi.responses import RedirectResponse
 
-app = FastAPI(title="Velvoro Daily OS")
+from app.auth.routes import auth_router
+
+app = FastAPI()
+
+@app.get("/", include_in_schema=False)
+def root():
+    return RedirectResponse(url="/login")
 
 app.include_router(auth_router)
-app.include_router(manager_router)
-app.include_router(admin_router)
-app.include_router(employee_router)
