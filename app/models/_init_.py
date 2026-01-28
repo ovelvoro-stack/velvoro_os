@@ -1,1 +1,1 @@
-# Makes app.models a package
+# Package initializer for app.models
