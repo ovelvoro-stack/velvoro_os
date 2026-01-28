@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h3>ఉద్యోగి పని ఎంటర్</h3>
+
+<input id="task" placeholder="పని">
+<button onclick="saveTask()">సేవ్</button>
+
+<script>
+function saveTask(){
+ fetch("/employee/task",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({user:"employee1",task:document.getElementById("task").value})
+ })
+}
+</script>
+</body>
+</html>
