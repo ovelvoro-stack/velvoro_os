@@ -1,8 +1,11 @@
 from fastapi import APIRouter
-from app.models.services.task_service import list_tasks
+import pandas as pd
 
 router = APIRouter()
 
 @router.get("/daily-summary/")
-def daily_summary():
-    return list_tasks()
+def get_summary():
+    try:
+        return pd.read_excel("data/daily_summary.xlsx").to_dict(orient="records")
+    except:
+        return []
