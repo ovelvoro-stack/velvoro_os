@@ -1,6 +1,9 @@
-from fastapi import Header, HTTPException
+from passlib.context import CryptContext
 
-def get_current_user(x_api_key: str = Header(None)):
-    if not x_api_key:
-        raise HTTPException(status_code=401, detail="Missing API key")
-    return x_api_key
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(password: str, hashed: str) -> bool:
+    return pwd_context.verify(password, hashed)
