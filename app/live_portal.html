@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Velvoro Live Portal</title>
+  <style>
+    body { font-family: Arial; margin: 40px; }
+    .hidden { display: none; }
+    input, button { margin: 5px 0; padding: 8px; width: 250px; }
+  </style>
+</head>
+<body>
+
+<h2>Live User Portal</h2>
+
+<!-- LOGIN -->
+<div id="loginBox">
+  <h3>Login</h3>
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p id="loginMsg"></p>
+</div>
+
+<!-- DATA ENTRY -->
+<div id="dataBox" class="hidden">
+  <h3>Data Entry</h3>
+  <input id="dataValue" placeholder="Enter data">
+  <button onclick="submitData()">Submit</button>
+  <button onclick="logout()">Logout</button>
+  <p id="dataMsg"></p>
+</div>
+
+<script>
+async function login() {
+  const res = await fetch("/auth/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      username: username.value,
+      password: password.value
+    })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    loginBox.classList.add("hidden");
+    dataBox.classList.remove("hidden");
+  } else {
+    loginMsg.innerText = data.detail || "Login failed";
+  }
+}
+
+async function submitData() {
+  const res = await fetch("/data-entry", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ value: dataValue.value })
+  });
+
+  const data = await res.json();
+  dataMsg.innerText = JSON.stringify(data);
+}
+
+function logout() {
+  location.reload();
+}
+</script>
+
+</body>
+</html>
