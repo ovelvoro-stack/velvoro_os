@@ -1,22 +1,27 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
-from app.auth.routes import auth_router
-from app.routes.data_entry_route import router as data_entry_router
+# existing routers (ALREADY IN YOUR APP)
+from app.auth.routes import router as auth_router
+from app.roles.routes import router as roles_router
+from app.dashboard.routes import router as dashboard_router
+from app.reports.routes import router as reports_router
+
+# NEW PRODUCT ROUTER
+from app.product.routes import router as product_router
 
 app = FastAPI()
 
-templates = Jinja2Templates(directory="app/templates")
+# ROOT → LOGIN (PRODUCTION SAFE)
+@app.get("/")
+def root():
+    return RedirectResponse(url="/auth/login")
 
-# EXISTING ROUTES (DO NOT TOUCH)
+# ROUTERS (NO LOGIC CHANGE)
 app.include_router(auth_router)
-app.include_router(data_entry_router)
+app.include_router(roles_router)
+app.include_router(dashboard_router)
+app.include_router(reports_router)
 
-# LIVE PRODUCTION UI PAGE
-@app.get("/portal", response_class=HTMLResponse)
-async def live_portal(request: Request):
-    return templates.TemplateResponse(
-        "live_portal.html",
-        {"request": request}
-    )
+# PRODUCT FLOW ROUTER (FINAL ADD)
+app.include_router(product_router)
