@@ -1,19 +1,13 @@
-from dataclasses import dataclass
-from typing import Optional
+from datetime import date
 
-
-@dataclass
 class CompanyPlan:
-    company_id: str
-    plan_name: str          # trial / starter / pro / enterprise
-    status: str             # active / inactive / expired
-    expires_on: Optional[str] = None
+    def __init__(self, plan_type: str, trial_end: date | None = None):
+        self.plan_type = plan_type  # "trial" or "paid"
+        self.trial_end = trial_end
 
-
-@dataclass
-class BillingRecord:
-    company_id: str
-    amount: float
-    currency: str
-    status: str             # success / failed / pending
-    reference_id: str
+    def is_trial_expired(self) -> bool:
+        if self.plan_type != "trial":
+            return False
+        if not self.trial_end:
+            return False
+        return date.today() > self.trial_end
