@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Welcome to Velvoro OS</h1>
+
+<div class="notice">
+  This is your first time here. Follow these simple steps to get started.
+</div>
+
+<ol>
+  <li>Login using your official username and password.</li>
+  <li>Complete your daily work using the dashboard.</li>
+  <li>Submit your entries before end of day.</li>
+  <li>View reports if your role permits.</li>
+</ol>
+
+<form method="get" action="/dashboard">
+  <button class="btn">Go to Dashboard</button>
+</form>
+{% endblock %}
