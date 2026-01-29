@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Request
-from app.billing.service import get_company_plan
+from fastapi import APIRouter
 
-router = APIRouter()
+router = APIRouter(prefix="/billing", tags=["Billing"])
 
-@router.get("/billing/status")
-def billing_status(request: Request):
-    company = request.state.user["company"]
-    return {"company": company, "plan": get_company_plan(company)}
+@router.get("/status")
+def billing_status():
+    return {
+        "status": "disabled",
+        "message": "Billing is not yet activated."
+    }
