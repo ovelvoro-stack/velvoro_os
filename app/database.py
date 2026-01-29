@@ -1,30 +1,15 @@
-import os
-import pandas as pd
-from app.config import DATA_DIR, EXCEL_PATH
-
-def ensure_excel():
-    if not os.path.exists(DATA_DIR):
-        os.makedirs(DATA_DIR)
-
-    if not os.path.exists(EXCEL_PATH):
-        with pd.ExcelWriter(EXCEL_PATH, engine="openpyxl") as writer:
-            pd.DataFrame(columns=["id", "title", "status"]).to_excel(
-                writer, sheet_name="tasks", index=False
-            )
-            pd.DataFrame(columns=["id", "note", "due_date"]).to_excel(
-                writer, sheet_name="followups", index=False
-            )
-
-def read_sheet(sheet_name: str) -> pd.DataFrame:
-    ensure_excel()
-    return pd.read_excel(EXCEL_PATH, sheet_name=sheet_name)
-
-def write_sheet(sheet_name: str, df: pd.DataFrame):
-    ensure_excel()
-    with pd.ExcelWriter(
-        EXCEL_PATH,
-        engine="openpyxl",
-        mode="a",
-        if_sheet_exists="replace"
-    ) as writer:
-        df.to_excel(writer, sheet_name=sheet_name, index=False)
+<!-- app/templates/dashboard.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Velvoro OS – Dashboard</title>
+</head>
+<body>
+<h2>Dashboard</h2>
+<ul>
+    <li><a href="/product">Product</a></li>
+    <li><a href="/reports">Reports</a></li>
+    <li><a href="/auth/logout">Logout</a></li>
+</ul>
+</body>
+</html>
