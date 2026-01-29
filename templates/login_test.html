@@ -1,33 +1,83 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import RedirectResponse, HTMLResponse
-from fastapi.templating import Jinja2Templates
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Velvoro OS – Login Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 40px;
+        }
+        .box {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        pre {
+            background: #eee;
+            padding: 10px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
 
-from app.auth.routes import auth_router
+<div class="box">
+    <h2>Velvoro OS – Login Test</h2>
 
-app = FastAPI()
+    <form id="loginForm">
+        <input type="text" name="username" placeholder="Username" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+    </form>
 
-# Templates setup
-templates = Jinja2Templates(directory="app/templates")
+    <pre id="result"></pre>
+</div>
 
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-@app.get("/")
-def root():
-    return RedirectResponse(url="/login")
+    const formData = new FormData(this);
+    const data = {
+        username: formData.get("username"),
+        password: formData.get("password")
+    };
 
+    const response = await fetch("/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
 
-@app.get("/login")
-def login_redirect():
-    return RedirectResponse(url="/auth/login")
+    const resultBox = document.getElementById("result");
+    const text = await response.text();
 
+    try {
+        resultBox.textContent = JSON.stringify(JSON.parse(text), null, 2);
+    } catch {
+        resultBox.textContent = text;
+    }
+});
+</script>
 
-# ✅ TEST LOGIN PAGE (PARALLEL, SAFE)
-@app.get("/login-test", response_class=HTMLResponse)
-def login_test(request: Request):
-    return templates.TemplateResponse(
-        "login_test.html",
-        {"request": request}
-    )
-
-
-# ✅ Existing auth routes (DO NOT REMOVE)
-app.include_router(auth_router)
+</body>
+</html>
