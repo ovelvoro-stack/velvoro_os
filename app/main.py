@@ -6,17 +6,13 @@ from app.auth.routes import auth_router
 
 app = FastAPI()
 
-# Templates setup (DO NOT change directory)
-templates = Jinja2Templates(directory="app/templates")
+# ✅ ఇక్కడే అసలు ఫిక్స్
+templates = Jinja2Templates(directory="templates")
 
-
-# Root → redirect to login test page
-@app.get("/", include_in_schema=False)
+@app.get("/")
 def root():
     return RedirectResponse(url="/login-test")
 
-
-# ✅ LOGIN TEST PAGE (HTML RENDER – FIXED)
 @app.get("/login-test", response_class=HTMLResponse)
 def login_test(request: Request):
     return templates.TemplateResponse(
@@ -24,6 +20,5 @@ def login_test(request: Request):
         {"request": request}
     )
 
-
-# Existing auth routes (DO NOT TOUCH)
+# 🔐 ఉన్న auth routes అలాగే ఉంచు
 app.include_router(auth_router)
