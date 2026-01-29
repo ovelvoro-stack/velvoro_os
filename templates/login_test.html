@@ -1,83 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Velvoro OS – Login Test</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            padding: 40px;
-        }
-        .box {
-            max-width: 400px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 6px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-        button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        pre {
-            background: #eee;
-            padding: 10px;
-            margin-top: 15px;
-            white-space: pre-wrap;
-        }
-    </style>
+  <title>Velvoro OS – Login</title>
 </head>
 <body>
+  <h2>Velvoro OS Login</h2>
 
-<div class="box">
-    <h2>Velvoro OS – Login Test</h2>
+  <form method="post" action="/auth/login">
+    <label>Username</label><br>
+    <input type="text" name="username"><br><br>
 
-    <form id="loginForm">
-        <input type="text" name="username" placeholder="Username" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-    </form>
+    <label>Password</label><br>
+    <input type="password" name="password"><br><br>
 
-    <pre id="result"></pre>
-</div>
-
-<script>
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-    const data = {
-        username: formData.get("username"),
-        password: formData.get("password")
-    };
-
-    const response = await fetch("/auth/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    });
-
-    const resultBox = document.getElementById("result");
-    const text = await response.text();
-
-    try {
-        resultBox.textContent = JSON.stringify(JSON.parse(text), null, 2);
-    } catch {
-        resultBox.textContent = text;
-    }
-});
-</script>
-
+    <button type="submit">Login</button>
+  </form>
 </body>
 </html>
