@@ -1,21 +1,15 @@
-{% extends "base.html" %}
-{% block content %}
-<h1>Dashboard</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Velvoro OS – Dashboard</title>
+</head>
+<body>
+  <h2>Dashboard</h2>
 
-{% if trial_expired %}
-<div class="notice">
-  Your trial period has expired. Please contact admin to activate billing.
-</div>
-{% endif %}
-
-<p>Welcome, {{ username }}.</p>
-
-<ul>
-  <li><strong>Primary Action:</strong> Enter today’s work</li>
-  <li><strong>Reports:</strong> View your submitted data</li>
-</ul>
-
-<form method="get" action="/reports">
-  <button class="btn">View Reports</button>
-</form>
-{% endblock %}
+  <ul>
+    <li><a href="/product">Go to Product</a></li>
+    <li><a href="/reports">View Reports</a></li>
+    <li><a href="/login">Logout</a></li>
+  </ul>
+</body>
+</html>
