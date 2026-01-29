@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><title>Reports</title></head>
+<body>
+<h2>Audit Report</h2>
+
+<table border="1">
+<tr><th>User</th><th>Role</th><th>Action</th><th>Time</th></tr>
+{% for r in audit %}
+<tr>
+<td>{{ r.user_id }}</td>
+<td>{{ r.role }}</td>
+<td>{{ r.action }}</td>
+<td>{{ r.time }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<a href="/reports/export">Export Excel</a>
+</body>
+</html>
