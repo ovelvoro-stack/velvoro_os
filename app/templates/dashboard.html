@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+
+{% if trial_expired %}
+<div class="notice">
+  Your trial period has expired. Please contact admin to activate billing.
+</div>
+{% endif %}
+
+<p>Welcome, {{ username }}.</p>
+
+<ul>
+  <li><strong>Primary Action:</strong> Enter today’s work</li>
+  <li><strong>Reports:</strong> View your submitted data</li>
+</ul>
+
+<form method="get" action="/reports">
+  <button class="btn">View Reports</button>
+</form>
+{% endblock %}
