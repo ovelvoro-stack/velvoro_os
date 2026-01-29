@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><title>Dashboard</title></head>
+<body>
+<h2>Welcome {{ user.role | upper }}</h2>
+
+{% if empty_state %}
+<p>{{ empty_state }}</p>
+{% endif %}
+
+<form action="/action" method="post">
+    <button type="submit">Do Primary Action</button>
+</form>
+
+<a href="/reports">View Reports</a>
+</body>
+</html>
