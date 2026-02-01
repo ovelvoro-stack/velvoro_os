@@ -1,9 +1,40 @@
+<!-- app/templates/dashboard.html (UPDATED FILE) -->
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <title>Velvoro OS - Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+        .container {
+            width: 80%;
+            margin: 40px auto;
+        }
+        .actions a {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 10px 16px;
+            background: #2563eb;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Velvoro Dashboard</h1>
+    <div class="container">
+        <h2>Welcome</h2>
+        <p>You have successfully logged in. This is your dashboard.</p>
+
+        <div class="actions">
+            <a href="/application">Go to Product</a>
+            <a href="#">View Reports</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
 </body>
 </html>
