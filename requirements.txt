@@ -4,4 +4,3 @@ jinja2
 pandas
 openpyxl
 passlib[bcrypt]
-redeploy
