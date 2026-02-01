@@ -9,35 +9,66 @@
             background: #f4f6f8;
         }
         .container {
-            width: 80%;
+            width: 90%;
             margin: 40px auto;
         }
-        .actions a {
-            display: inline-block;
-            margin-right: 10px;
-            padding: 10px 16px;
-            background: #2563eb;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
+        .header {
+            background: #111827;
+            color: #ffffff;
+            padding: 15px;
+            font-size: 18px;
         }
-        .logout {
+        .card {
+            background: #ffffff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .actions button {
+            padding: 10px 16px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #ffffff;
+        }
+        .primary {
+            background: #2563eb;
+        }
+        .secondary {
             background: #374151;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Welcome</h2>
+
+<div class="header">Velvoro OS – Dashboard</div>
+
+<div class="container">
+    <div class="card">
+        <h3>Welcome</h3>
         <p>You have successfully logged in. This is your dashboard.</p>
 
         <div class="actions">
-            <!-- ONLY VALID ROUTE -->
-            <a href="/application">Go to Application Form</a>
+            <button class="primary" onclick="window.location.href='/application'">
+                Go to Application Form
+            </button>
 
-            <!-- OPTIONAL -->
-            <a href="/logout" class="logout">Logout</a>
+            <button class="secondary" onclick="window.location.href='/logout'">
+                Logout
+            </button>
         </div>
     </div>
+</div>
+
+<footer>© Velvoro Software Solution</footer>
+
 </body>
 </html>
