@@ -1,46 +1,46 @@
-# app/routes/ui.py
-
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-import httpx
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 
+# LOGIN PAGE (GET)
 @router.get("/login", response_class=HTMLResponse)
-async def login_page(request: Request, error: str | None = None):
+def login_page(request: Request):
     return templates.TemplateResponse(
         "login.html",
-        {"request": request, "error": error},
+        {"request": request, "error": None}
     )
 
 
+# LOGIN SUBMIT (POST)
 @router.post("/login")
-async def login_submit(
+def login_submit(
     request: Request,
     username: str = Form(...),
-    password: str = Form(...),
+    password: str = Form(...)
 ):
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            "http://localhost:8000/auth/login",
-            json={"username": username, "password": password},
-        )
+    # ✅ HARDCODED LOGIN (as you already have)
+    if username == "admin" and password == "admin123":
+        return RedirectResponse("/dashboard", status_code=302)
 
-    if response.status_code == 200:
-        return RedirectResponse(url="/dashboard", status_code=302)
-
+    # ❌ WRONG CREDENTIALS
     return templates.TemplateResponse(
         "login.html",
-        {"request": request, "error": "Invalid credentials"},
+        {
+            "request": request,
+            "error": "Invalid username or password"
+        },
+        status_code=401
     )
 
 
+# DASHBOARD
 @router.get("/dashboard", response_class=HTMLResponse)
-async def dashboard(request: Request):
+def dashboard(request: Request):
     return templates.TemplateResponse(
         "dashboard.html",
-        {"request": request},
+        {"request": request}
     )
