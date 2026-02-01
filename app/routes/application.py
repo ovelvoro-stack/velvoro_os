@@ -1,29 +1,66 @@
-from fastapi import APIRouter, Request, Form
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
+<!-- app/templates/application.html -->
 
-router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Velvoro OS - Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+        .form-box {
+            width: 420px;
+            margin: 80px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 6px;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-box">
+        <h2>Application Form</h2>
 
-@router.get("/application", response_class=HTMLResponse)
-def application_form(request: Request):
-    return templates.TemplateResponse(
-        "application.html",
-        {"request": request}
-    )
+        <form method="post" action="/application">
+            <label>Customer Name</label>
+            <input type="text" name="customer_name" required>
 
-@router.post("/application/submit")
-def submit_application(
-    customer_name: str = Form(...),
-    mobile: str = Form(...),
-    email: str = Form(...),
-    location: str = Form(...),
-    details: str = Form("")
-):
-    # Data captured together (single submit)
-    print(customer_name, mobile, email, location, details)
+            <label>Mobile Number</label>
+            <input type="text" name="mobile_number" required>
 
-    return RedirectResponse(
-        url="/dashboard",
-        status_code=303
-    )
+            <label>Email ID</label>
+            <input type="email" name="email" required>
+
+            <label>Location / Address</label>
+            <textarea name="location" rows="3" required></textarea>
+
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
+</body>
+</html>
