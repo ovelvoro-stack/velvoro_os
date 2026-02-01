@@ -23,14 +23,22 @@ async def login_submit(
 ):
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            "http://localhost:10000/auth/login",  # 🔁 same backend API
+            "http://localhost:8000/auth/login",
             json={"username": username, "password": password}
         )
 
     if response.status_code == 200:
         return RedirectResponse(url="/dashboard", status_code=302)
 
-    return RedirectResponse(
-        url="/login?error=Invalid+credentials",
-        status_code=302
+    return templates.TemplateResponse(
+        "login.html",
+        {"request": request, "error": "Invalid username or password"}
+    )
+
+
+@router.get("/dashboard", response_class=HTMLResponse)
+def dashboard(request: Request):
+    return templates.TemplateResponse(
+        "dashboard.html",
+        {"request": request}
     )
